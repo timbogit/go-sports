@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"html/template"
 	"math/rand"
+	"github.com/ant0ine/go-json-rest"
 	"net/http"
 	"time"
+	"api"
 )
 
 type Greeting struct {
@@ -18,8 +20,19 @@ type Greeting struct {
 }
 
 func init() {
-	http.HandleFunc("/", root)
-	http.HandleFunc("/sign", sign)
+// 	 http.HandleFunc("/", root)
+//       http.HandleFunc("/sign", sign)
+	handler := rest.ResourceHandler{
+                EnableRelaxedContentType: true,
+        }
+	handler.SetRoutes(
+		rest.Route{"GET", "/api/countries", api.GetAllCountries},
+		rest.Route{"POST", "/api/countries", api.PostCountry},
+		rest.Route{"GET", "/api/countries/:code", api.GetCountry},
+		rest.Route{"DELETE", "/api/countries/:code", api.DeleteCountry},
+	)
+
+	http.Handle("/", &handler)
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
