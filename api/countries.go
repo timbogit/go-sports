@@ -1,7 +1,7 @@
 package api
 
 import (
-//	"appengine"
+	"appengine"
 //	"appengine/datastore"
 	"models"
 	"github.com/ant0ine/go-json-rest"
@@ -18,13 +18,13 @@ func GetCountry(w *rest.ResponseWriter, r *rest.Request) {
 	w.WriteJson(&country)
 }
 func GetAllCountries(w *rest.ResponseWriter, r *rest.Request) {
-	countries := make([]*models.Country, len(models.Store))
-	i := 0
-	for _, country := range models.Store {
-		countries[i] = country
-		i++
+	ds := &models.DataStore{ appengine.NewContext(&(*r.Request)) }
+	cs, err := ds.GetAllCountries()
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	w.WriteJson(&countries)
+	w.WriteJson(cs)
 }
 
 func PostCountry(w *rest.ResponseWriter, r *rest.Request) {
