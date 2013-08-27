@@ -18,7 +18,7 @@ func GetCountry(w *rest.ResponseWriter, r *rest.Request) {
 	w.WriteJson(&country)
 }
 func GetAllCountries(w *rest.ResponseWriter, r *rest.Request) {
-	ds := &models.DataStore{ appengine.NewContext(&(*r.Request)) }
+	ds := &models.DataStore{ appengine.NewContext(r.Request) }
 	cs, err := ds.GetAllCountries()
 	if err != nil {
 		rest.Error(w, err.Error(), http.StatusInternalServerError)
