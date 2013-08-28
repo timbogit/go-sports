@@ -1,8 +1,22 @@
+/* Demonstrate simple POST GET and DELETE operations
+
+The Curl Demo:
+
+        curl -i -d '{"Code":"FR","Name":"France"}' http://127.0.0.1:8080/api/countries
+        curl -i -d '{"Code":"US","Name":"United States"}' http://127.0.0.1:8080/api/countries
+        curl -i http://127.0.0.1:8080/api/countries/FR
+        curl -i http://127.0.0.1:8080/api/countries/US
+        curl -i http://127.0.0.1:8080/api/countries
+        curl -i -X DELETE http://127.0.0.1:8080/api/countries/FR
+        curl -i http://127.0.0.1:8080/api/countries
+        curl -i -X DELETE http://127.0.0.1:8080/api/countries/US
+        curl -i http://127.0.0.1:8080/api/countries
+
+*/
 package api
 
 import (
 	"appengine"
-//	"appengine/datastore"
 	"models"
 	"github.com/ant0ine/go-json-rest"
 	"net/http"
@@ -10,7 +24,12 @@ import (
 
 func GetCountry(w *rest.ResponseWriter, r *rest.Request) {
 	code := r.PathParam("code")
-	country := models.Store[code]
+	ds := &models.DataStore{ appengine.NewContext(r.Request) }
+	country, err := ds.GetCountry(code)
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	if country == nil {
 		rest.NotFound(w, r)
 		return
@@ -42,11 +61,22 @@ func PostCountry(w *rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, "country name required", 400)
 		return
 	}
-	models.Store[country.Code] = &country
+	ds := &models.DataStore{ appengine.NewContext(r.Request) }
+	err = ds.UpdateCountry(&country)
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteJson(&country)
 }
 
 func DeleteCountry(w *rest.ResponseWriter, r *rest.Request) {
 	code := r.PathParam("code")
-	delete(models.Store, code)
+	ds := &models.DataStore{ appengine.NewContext(r.Request) }
+	err := ds.DeleteCountry(code)
+	if err != nil {
+		rest.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
