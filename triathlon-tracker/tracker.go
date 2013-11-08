@@ -11,10 +11,6 @@ func init() {
                 EnableRelaxedContentType: true,
         }
 	handler.SetRoutes(
-		rest.Route{"GET", "/api/countries", api.GetAllCountries},
-		rest.Route{"POST", "/api/countries", api.PostCountry},
-		rest.Route{"GET", "/api/countries/:code", api.GetCountry},
-		rest.Route{"DELETE", "/api/countries/:code", api.DeleteCountry},
 		// races routes
 		rest.Route{"GET", "/api/races", api.GetAllRaces},
 		rest.Route{"POST", "/api/races", api.PostRace},

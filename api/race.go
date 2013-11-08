@@ -32,13 +32,13 @@ func GetRace(w *rest.ResponseWriter, r *rest.Request) {
   w.WriteJson(&Race)
 }
 func GetAllRaces(w *rest.ResponseWriter, r *rest.Request) {
-  // ds := &models.DataStore{ appengine.NewContext(r.Request) }
-  // cs, err := ds.GetAllraces()
-  // if err != nil {
-  //   rest.Error(w, err.Error(), http.StatusInternalServerError)
-  //   return
-  // }
-  // w.WriteJson(cs)
+  ds := &models.DataStore{ appengine.NewContext(r.Request) }
+  cs, err := ds.GetAllRaces()
+  if err != nil {
+    rest.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
+  w.WriteJson(cs)
 }
 
 func PostRace(w *rest.ResponseWriter, r *rest.Request) {
@@ -71,11 +71,11 @@ func PostRace(w *rest.ResponseWriter, r *rest.Request) {
 }
 
 func DeleteRace(w *rest.ResponseWriter, r *rest.Request) {
-  // code := r.PathParam("code")
-  // ds := &models.DataStore{ appengine.NewContext(r.Request) }
-  // err := ds.DeleteRace(code)
-  // if err != nil {
-  //   rest.Error(w, err.Error(), http.StatusInternalServerError)
-  //   return
-  // }
+  code := r.PathParam("key")
+  ds := &models.DataStore{ appengine.NewContext(r.Request) }
+  err := ds.DeleteRace(code)
+  if err != nil {
+    rest.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+  }
 }
