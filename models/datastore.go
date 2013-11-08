@@ -40,3 +40,16 @@ func (ds *DataStore) DeleteCountry(code string) (err error) {
 	delete(Store, code)
 	return nil
 }
+
+func (ds *DataStore) UpdateRace(race *Race) (err error) {
+	//_, err := datastore.Put(ds.Context, datastore.NewKey(ds.Context, "Country", country.Code, 0, nil), country)
+	RaceStore[race.Key] = race
+	return nil
+
+}
+
+func (ds *DataStore) GetRace(key string) (race *Race, err error) {
+	//err := datastore.Get(ds.Context, datastore.NewKey(ds.Context, "Country", code, 0, nil), country)
+	race = RaceStore[key]
+	return race, nil
+}
